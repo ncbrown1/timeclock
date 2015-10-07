@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% load widget_tweaks %}
+
+<head>
+<link rel="stylesheet" href="{% static 'css/signin.css' %}">
+{% block title %}Create New Thread{% endblock %}
+</head>
+
+{% block content %}
+	<div class="container well">
+    <h2 class="form-signin-heading">Create a new topic</h2>
+    <form class="form-horizontal" role="form" method="POST" action="{% url 'new-thread' forum.id %}">
+	{% csrf_token %}
+	{% for err in form.non_field_errors %}
+          <p class="text-danger">{{ err }}</p>
+        {% endfor %}
+	
+	{% for field in form %}
+	    <div class="fieldWrapper">
+		<label>{{ field.label }}</label>
+		<p class="text-danger">{{ field.errors|striptags }}</p>
+		{{ field|add_class:"form-control"|append_attr:'placeholder:Enter Text Here...' }}
+	    </div>
+	{% endfor %}
+	<label></label>
+	<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+	<p> </p>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% load widget_tweaks %}
+{% load tz %}
+
+<head>
+<link rel="stylesheet" href="{% static 'css/signin.css' %}">
+</head>
+
+{% block content %}
+<div class="container" style="background-color: rgba(255,255,255,0.3);">
+    <div class="jumbotron" style="background-color: #FFF;">
+	    <h2>Hello, {{ employee.user.first_name }}.</h2>
+	    <p>You are currently clocked {% if employee.clocked_in %} in{% else %} out{% endif %}.</p>
+    </div>
+</div>
+<div class="container" style="background-color: rgba(255,255,255,0.3);">
+    <h2 class="header">Dashboard</h2>
+    {% if employee.clocked_in %}
+    <div class="panel panel-warning">
+	<div class="panel-heading">
+	    <div class="row">
+		<div class="col-6 col-md-6">
+		    <h2 class="panel-title"><span class="glyphicon glyphicon-time"></span> Clock Out</h2>
+		</div>
+		<div class="col-6 col-md-6">
+		    <a href="/profile/clockevent-history/" style="float: right;">See Clock Event History<span class="glyphicon glyphicon-chevron-right"></span></a>
+		</div>
+	    </div>
+	</div>
+	<div class="panel-body">
+	    <form class="form-horizontal form-signin" role="form" method="POST">
+	    {% csrf_token %}
+		{% for err in out_form.non_field_errors %}
+		    <p class="text-danger">{{ err }}</p>
+		{% endfor %}
+		{{ out_form.as_p }}
+		<input type="hidden" name="action" value="clock_out">
+	        <button class="btn btn-success" type="submit">Clock Out</button>
+	    </form>
+	</div>
+    </div>
+    {% else %}
+    <div class="panel panel-success">
+	<div class="panel-heading">
+	    <div class="row">
+		<div class="col-6 col-md-6">
+		    <h2 class="panel-title"><span class="glyphicon glyphicon-time"></span> Clock In</h2>
+		</div>
+		<div class="col-6 col-md-6">
+		    <a href="/profile/clockevent-history/" style="float: right;">See Clock Event History<span class="glyphicon glyphicon-chevron-right"></span></a>
+		</div>
+	    </div>
+	</div>
+	<div class="panel-body">
+	    <form class="form-horizontal form-signin" role="form" method="POST">
+		{% csrf_token %}
+		{% for err in in_form.non_field_errors %}
+		    <p class="text-danger">{{ err }}</p>
+		{% endfor %}
+		{{ in_form.as_p }}
+		<input type="hidden" name="action" value="clock_in">
+		<button class="btn btn-success" type="submit">Clock In</button>
+		{% if errors %}
+			<p class="text-danger">** There is a problem with the times you have chosen. Please try again or talk to your supervisor.</p>
+		{% endif %}
+	    </form>
+	</div>
+    </div>
+    {% endif %}
+</div>
+<div class="container" style="background-color: rgba(255,255,255,0.3);">
+    <div class="row">
+	<div class="col-9 col-md-9">
+	<iframe src="<googlecalendarlink>" style=" border-width:0 " width="850" height="638" frameborder="0" scrolling="no"></iframe>
+	</div>
+	<div class="col-3 col-md-3">
+	<div class="panel panel-info" style="height: 638px; ">
+	    <div class="panel-heading">
+		<h2 class="panel-title">Clocked In Employees</h2>
+	    </div>
+	    <div class="panel-body">
+		<div class="list-group" style="height: 570px; overflow: scroll">
+		    {% for emp in clocked_in_employees %}
+			<li class="list-group-item">
+			    <h4 class="list-group-item-heading">{{ emp.user.first_name }} {{ emp.user.last_name }}</h4>
+			    <table class="list-group-item-text table">
+				<thead><tr><th>In</th><th>Out</th></tr></thead>
+				<tbody>
+					<tr><td>{{ emp.last_clocked_in.time }}</td>
+					<td>{{ emp.last_clocked_out.time }}</td></tr>
+				</tbody>
+			    </table>
+			</li>
+		    {% endfor %}
+		</div>
+	    </div>
+	</div>
+	</div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Helpdesk Staff Blog{% endblock %}
+
+{% block content %}
+<div class="container well" id="list">
+<label></label>
+<table class="table table-hover" style="table-layout: fixed; word-wrap: break-word;">
+  <thead>
+    <tr>
+	<th></th>
+	<th style="width: 60px">Posts</th>
+	<th>Description</th>
+	<th>Last post</th>
+	<th></th>
+	<th style="width: 10px"></th>
+    </tr>
+  </thead>
+  <tbody> 
+    {% for f in forums %}
+    <tr>
+	<td {% if forloop.last %}class="last"{% endif %}>
+	<div class="title"><a href="{% url 'forum-detail' f.pk %}">{{ f.title }}</a></div></td>
+	<td style="width: 60px" {% if forloop.last %}class="last"{% endif %}>{{ f.num_posts }}</td>
+	<td {% if forloop.last %}class="last"{% endif %}>{{ f.description }}</td>
+	<td {% if forloop.last %}class="last"{% endif %}>{{ f.last_post.short|linebreaksbr }}</td>
+	<td align="right" style="width: 60px" {% if forloop.last %}class="last"{% endif %}>
+		<a class="btn btn-success" href="{% url 'forum-detail' f.pk %}">View</a></td>
+	<td style="width: 10px"></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</div>
+{% endblock %}

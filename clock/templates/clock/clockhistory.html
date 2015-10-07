@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="background-color:rgba(255,255,255,0.3);">
+    <br />
+    <div class="panel panel-info">
+	<div class="panel-heading">
+	    <h3 class="panel-title">Select Date Range to Show</h3>
+	</div>
+	<table class="table">
+	    <tr>
+		<td>
+		    <div class="panel-body">
+			<form class="form-inline" role="form" method="POST"  action="{% url 'clockevent-history' %}">
+			{% csrf_token %}
+			{% for err in history_form.non_field_errors %}
+			    <p class="text-danger">{{ err }}</p>
+			{% endfor %}
+			{{ history_form.as_p }}
+			<button class="btn btn-success" type="submit">Update Query</button><br />
+			</form>
+		    </div>
+		</td>
+		<td>
+		    <div class="container-fluid text-center span5">
+			<h3>Total Hours Worked This Period:</h3>
+			<span class="badge" style="transform:scale(2.0,2.0);">{{ time_worked }}</span>
+		    </div>
+		</td>
+	    </tr>
+	</table>
+    </div> <!-- /.panel -->
+
+
+<h2 class="sub-header">Latest Clock-in/Clock-out Activity</h2>
+<div class="table-responsive well">
+    <a class="btn btn-primary center-block" href="/{{ timecard }}">*Download Generated Timecard</a>
+    <table class="table table-hover">
+	<thead>
+	    <tr>
+		<th>Date</th>
+		<th>Time In</th>
+		<th>Time Out</th>
+		<th>Time Total</th>
+		<th>Message</th>
+	    </tr>
+	</thead>
+	<tbody>
+	    {% if events %}
+		{% for event in events %}
+		    <tr>
+			<td>{{ event.date }}</td>
+			<td>{{ event.time_in }}</td>
+			<td>{{ event.time_out }}</td>
+			<td>{{ event.time_worked }}</td>
+			<td>{{ event.message }}</td>
+		    </tr>
+		{% endfor %}
+	    {% else %}
+		    <tr>
+			<td>---</td>
+			<td>---</td>
+			<td>---</td>
+			<td>---</td>
+			<td>No history as of yet.</td>
+		    </tr>
+	    {% endif %}
+	</tbody>
+    </table>
+</div>
+    <p style="font-size:80%;"><b>*Disclaimer:</b> Because generated files are only temporary, you may have to refresh the page in order to successfully view your timecard. The times are generated based on the start date specified in the clock event history query at the top of this page.</p>
+<div>
+{% endblock %}

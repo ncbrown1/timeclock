@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block content %}
+  <head>
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container" style="background-color:rgba(255,255,255,0.3);">
+      <form class="form-horizontal form-signin span4" role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        <h2 class="form-signin-heading text-center">Please sign in</h2>
+	{% csrf_token %}
+	<label>Username</label>
+        <input type="text" class="form-control" name="username" value="{{ username }}" placeholder="Username" required autofocus>
+	<label>Password</label>
+        <input type="password" class="form-control" name="password" value="{{ password }}" placeholder="Password" required>	
+	<label> </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> </br>
+	<a href="/register/" class="btn btn-lg btn-primary btn-block" role="button">Register</a> </br>
+      </form>
+      {% if form.errors %}
+	<p class="text-danger text-center">Either your username and password did not match or you do not have sufficient permissions.</p><p class="text-danger text-center">Please try again, register, or contact your supervisor.</p>
+      {% endif %}
+
+    </div> <!-- /container -->
+  </body>
+{% endblock %}

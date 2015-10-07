@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    <br />
+    <div class="panel panel-default">
+	<div class="panel-heading">
+	    <h3 class="panel-title">{{ employee.user.get_full_name }} Clock History - Select Date Range to Show</h3>
+	</div>
+	<table class="table">
+	    <tr>
+		<td>
+		    <div class="panel-body">
+			<form class="form-inline" role="form" method="POST"  action="{% url 'employee-history' employee.pk %}">
+			{% csrf_token %}
+			{% for err in history_form.non_field_errors %}
+			    <p class="text-danger">{{ err }}</p>
+			{% endfor %}
+			{{ history_form.as_p }}
+			<button class="btn btn-success" type="submit">Update Query</button><br />
+			</form>
+		    </div>
+		</td>
+		<td>
+		    <div class="container-fluid text-center span5">
+			<h4>Total Hours Worked This Period:</h4>
+			<span class="badge" style="transform:scale(2.0,2.0);">{{ hour_total }}</span>
+			<h4>Total Cost For This Period:</h4>
+			<span class="badge" style="transform:scale(2.0,2.0);">${{ total_cost }}</span>
+		    </div>
+		</td>
+	    </tr>
+	</table>
+    </div> <!-- /.panel -->
+
+
+<h2 class="sub-header">Latest Clock-in/Clock-out Activity for {{ employee.user.username }}</h2>
+<div class="table-responsive well">
+    <table class="table table-hover">
+	<thead>
+	    <tr>
+		<th>Employee</th>
+		<th>Pay Rate</th>
+		<th>Date</th>
+		<th>Time In</th>
+		<th>Time Out</th>
+		<th>Time Total</th>
+		<th>Message</th>
+	    </tr>
+	</thead>
+	<tbody>
+	    {% if events %}
+		{% for event in events %}
+		    <tr class="active">
+			<td>{{ event.employee }}</td>
+			<td>${{ event.employee.pay_rate|floatformat:2 }}</td>
+			<td>{{ event.date }}</td>
+			<td>{{ event.time_in }}</td>
+			<td>{{ event.time_out }}</td>
+			<td>{{ event.time_worked }}</td>
+			<td>{{ event.message }}</td>
+		    </tr>
+		{% endfor %}
+	    {% else %}
+		    <tr class="active">
+			<td>---</td>
+			<td>---</td>
+			<td>---</td>
+			<td>---</td>
+			<td>---</td>
+			<td>---</td>
+			<td>No history as of yet.</td>
+		    </tr>
+	    {% endif %}
+	</tbody>
+    </table>
+</div>
+<div>
+{% endblock %}

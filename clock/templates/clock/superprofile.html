@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container" style="background-color:rgba(255,255,255,0.3);">
+    <div class="jumbotron" style="background-color: #FFF;">
+	<h2>Greetings, Master {{ admin.last_name }}.</h2>
+	<p>There are currently {{ clocked_in_employees.count }} minion(s) at your service.</p>
+    </div>
+    <h2 class="subheader">Helpdesk Employees</h2>
+<div class="table-responsive">
+    <table class="table table-hover">
+	<thead style="background-color:rgba(255,255,255,0.3);">
+	    <tr>
+		<th>User</th>
+		<th>First Name</th>
+		<th>Surname</th>
+		<th>Pay Rate<th>
+		<th>Clocked In</th>
+		<th>From</th>
+		<th>To</th>
+		<th>Last Message</th>
+		<th><a href="/super-clockevent-history/">History</a><th>
+	    </tr>
+	</thead>
+	<tbody>
+	   {% for emp in employees %}
+		<tr class="active {% if emp.clocked_in %}success{% else %}danger{% endif %}" style="word-wrap: break-word;">
+		    <td>{{ emp.user.username }}</td>
+		    <td>{{ emp.user.first_name }}</td>
+		    <td>{{ emp.user.last_name }}</td>
+		    <td>${{ emp.pay_rate|floatformat:2 }}</td>
+		    <td colspan="2" class="text-center"> {% if emp.clocked_in %}<span class="glyphicon glyphicon-ok-circle" style="color: green;"></span>{% else %}<span class="glyphicon glyphicon-remove-circle" style="color: red;"></span>{% endif %} </td>
+		    {% if emp.clocked_in %}
+			<td>{{ emp.last_clocked_in.time }}</td>
+			<td>{{ emp.last_clocked_out.time }}</td>
+		    {% else %}
+			<td></td><td></td>
+		    {% endif %}
+		    <td>{{ emp.last_message }}</td>
+		    <td><a href="{% url 'employee-history' emp.pk %}">View</a></td>
+		</tr>
+	   {% endfor %}
+	</tbody>
+    </table>
+</div>
+
+<div class="container text-center">
+<h2 class="subheader">Help Desk Calendar</h2>
+        <iframe src="<googlecalendarlink>" style=" border-width:0 " width="850" height="638" frameborder="0" scrolling="no"></iframe>
+</div>
+
+</div>
+{% endblock %}

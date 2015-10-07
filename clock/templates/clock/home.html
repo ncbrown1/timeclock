@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block options %}onload="$('#employee-carousel').carousel({ interval:3000 })"{% endblock %}
+
+{% block content %}
+<div class="container pagination-centered" style="background-color:rgba(255,255,255,0.3);">
+    <h1 style="text-color: #000;">The Help Desk Team</h1>
+<div id="employee-carousel" class="carousel slide" data-ride="carousel">
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+	{% if clock_employees %}
+	    {% for employee in clock_employees %}
+		<div class="item {% if forloop.counter == 1 %}active{% endif %}">
+		    <!--<img src="http://placehold.it/1x175" alt="">-->
+		    <img src="/media/{{ employee.profile_pic.url }}" class="img-rounded text-center pagination-centered" style="height: 200px; width: 200px; margin: auto;"/>
+		    <div class="carousel-caption" style="text-shadow: none; position: static;">
+	        	<h2>{% if employee.clocked_in %}<span class="glyphicon glyphicon-globe text-success" style="transform:scale(0.5,0.5);"></span>{% endif%}{{ employee.user.first_name }} {{ employee.user.last_name }}</h2>
+			<a href="mailto:#" >{{ employee.user.email }}</a>
+		    </div>
+		</div>
+	    {% endfor %}
+	{% else %}
+	    <div class="item">
+		<div class="carousel-caption">
+		    <p class="text-info">There are no employees.</p>
+		</div>
+	    </div>
+	{% endif %}
+    </div>
+
+    <!-- Controls -->
+    <a class="left carousel-control" href="#employee-carousel" id="carousel-left" data-slide="prev" style="background-image: none;">
+	<span class="glyphicon glyphicon-chevron-left" style="color: #3399F3;"></span>
+    </a>
+    <a class="right carousel-control" href="#employee-carousel" id="carousel-right" data-slide="next" style="background-image: none;">
+	<span class="glyphicon glyphicon-chevron-right" style="color: #3399F3"></span>
+    </a>
+</div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="container pagination-center" style="padding-top: 25px; background-color:rgba(255,255,255,0.3);">
+  <h1>Helpdesk Tools and Resources</h1>
+    <div class="list-group">
+	<a href="{% static 'downloads/Student Biweekly June - Dec.pdf' %}" class="list-group-item">Download Timesheet PDF</a>
+	<a href="{% static 'downloads/Student Biweekly June - Dec.docx' %}" class="list-group-item">Download Timesheet DOCX</a>
+    <!-- Other private/restricted links here -->
+    </div>
+</div>
+{% endif %}
+
+<div class="container pagination-center" style="padding-top: 15px; background-color: rgba(255,255,255,0.3);" >
+  <h1>College of Engineering Online Resources</h1>
+    <div class="list-group">
+      <a href="http://engr.ucsb.edu/eci" class="list-group-item">ECI Home Page</a>
+      <a href="http://engr.ucsb.edu/eci/kb" class="list-group-item">ECI Knowledge Base</a>
+      <a href="http://engr.ucsb.edu/~esbreservations" class="list-group-item">ESB Room Reservations</a>
+      <a href="http://engr.ucsb.edu" class="list-group-item">College of Engineering Home Page</a>
+      <a href="http://accounts.engr.ucsb.edu/" class="list-group-item">College of Engineering Account Maintenance</a>
+    </div>
+</div>
+
+<script>$('[data-slide-to=0').trigger('click');</script>
+
+{% endblock %}
+
+<script type='text/javascript' src="http://imsky.github.io/holder/holder.js"></script>

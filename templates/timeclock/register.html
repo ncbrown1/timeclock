@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static from staticfiles %}
+{% block content %}
+  <head>  
+    <!-- Custom Style for this Template -->
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+  </head>
+
+  <body>
+    <div class="container" style="background-color:rgba(255,255,255,0.3);"> 
+      <a href="/login" style="color:#EEF;"><span class="glyphicon glyphicon-chevron-left" style="color: #EEF;"></span> Back to Login</a>
+    </div>
+    <div class="container" style="background-color:rgba(255,255,255,0.3);">
+      {% if registered %}
+	<div class="container text-center">
+	  <br /> <br /> <br /> <br />
+	  <p><strong>Thank you for registering</strong></p>
+	  {% if user.is_superuser %}<a href="/admin/">Go to admin page.</a><br />{% endif %}
+	</div>
+      {% else %}
+      <h2 class="form-signin-heading text-center">User Registration</h2>
+      <form class="form-horizontal form-signin" role="form" method="post" action="{% url 'clock.views.register' %}"
+		{% if employee_form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+	{% csrf_token %}
+	{% for err in user_form.non_field_errors %}
+	  <p class="text-danger">{{ err }}</p>
+	{% endfor %}
+	{% for err in employee_form.non_field_errors %}
+	  <p class="text-danger">{{ err }}</p>
+	{% endfor %}
+	<div class="fieldWrapper">
+	  <label>Username*</label>
+	  <p class="text-danger">{{ user_form.username.errors|striptags }}</p>
+	  {{ user_form.username|add_class:"form-control"|append_attr:'placeholder:Username' }}
+	</div>
+	<div class="fieldWrapper">
+	  <label>First Name</label>
+	  <p class="text-danger">{{ user_form.first_name.errors|striptags }}</p>
+	  {{ user_form.first_name|add_class:"form-control"|append_attr:'placeholder:First Name' }}
+	</div>
+	<div class="fieldWrapper">
+	  <label>Last Name</label>
+	  <p class="text-danger">{{ user_form.last_name.errors|striptags }}</p>
+	  {{ user_form.last_name|add_class:"form-control"|append_attr:'placeholder:Last Name' }}
+	</div>
+	<div class="fieldWrapper">
+	  <label>Email Address*</label>
+	  <p class="text-danger">{{ user_form.email.errors|striptags }}</p>
+	  {{ user_form.email|add_class:"form-control"|append_attr:'placeholder:Email Address' }}
+	</div>
+	<div class="fieldWrapper">
+	  <label>Password*</label>
+	  <p class="text-danger">{{ user_form.password.errors|striptags }}</p>
+	  {{ user_form.password|add_class:"form-control"|append_attr:'placeholder:Password' }}
+	</div>
+	<div class="fieldWrapper">
+	  <label>Confirm Password*</label>
+	  <p class="text-danger">{{ user_form.password_confirm.errors|striptags }}</p>
+	  {{ user_form.password_confirm|add_class:"form-control"|append_attr:'placeholder:Confirm Password' }}
+	</div>
+	<div class="fieldWrapper">
+	  <label>Profile Picture</label>
+	  <p class="text-danger">{{ employee_form.profile_pic.errors|striptags }}</p>
+	  {{ employee_form.profile_pic|add_class:"form-control" }}
+	  <p class="help-block">Please make sure the picture you choose is roughly square.</p>
+	  <p class="help-block">You may add a profile picture later if you desire.</p>
+	</div>
+	<button class="btn btn-lg btn-primary btn-block" type="submit">Create New Account</button> </br>
+      <p><i>*These fields are required.</i></p>
+      </form>
+      {% endif %}
+    </div> <!-- /container -->
+    
+  </body>
+{% endblock %}

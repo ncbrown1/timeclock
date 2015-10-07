@@ -1,0 +1,168 @@
+{% load staticfiles %}
+
+{% block content %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name=description content="">
+  <meta name="author" content="Nick Brown">
+  <link rel="shortcut icon" href="{{ STATIC_URL }}ico/favicon.ico">
+
+  <title>{% block title %}ECI Clock Events Login{% endblock %}</title>
+
+  <!-- Bootstrap core CSS -->
+  <link class="cssdeck" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" class="cssdeck">
+
+</head>
+
+<body>
+<div class="container">
+  <div class="" id="loginModal">
+    <div class="modal-header">
+      <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> -->
+      <h3>Please Sign In</h3>
+    </div>
+    <div class="modal-body">
+      <div class="well">
+	<ul class="nav nav-tabs">
+	  <li class="active"><a href="#login" data-toggle="tab">Login</a></li>
+	  <li><a href="#create" data-toggle="tab">Create Account</a></li>
+	</ul>
+	<div id="myTabContent" class="tab-content">
+	  <div class="tab-pane active in" id="login">
+	    <form class="form-horizontal" action='{% url 'django.contrib.auth.views.login' %}' method="POST" role="form">
+	      <fieldset>
+		<div id="legend">
+		  <legend class="">Login</legend>
+		</div>
+		{% csrf_token %}    
+		<div class="control-group">
+		  <!-- Username -->
+		  <label class="control-label"  for="username">Username</label>
+		  <div class="controls">
+		    <input type="text" id="username" name="username" placeholder="Username" value="{{ username }}" class="input-xlarge" required autofocus>
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Password-->
+		  <label class="control-label" for="password">Password</label>
+		  <div class="controls">
+		    <input type="password" id="password" name="password" placeholder="Password" value="{{ password }}" class="input-xlarge" required>
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Button -->
+		  <div class="controls">
+		    <button class="btn btn-success">Login</button>
+		  </div>
+		</div>
+	      </fieldset>
+	    </form>         
+	    {% if form.errors %}       
+	    <p><i>Your username and password did not match. Please try again or register for a new account.</i></p>
+	    {% endif %}
+	  </div>
+	  <div class="tab-pane fade" id="create">
+	    {% if registered %}
+	    <p>You have already successfully registered!</p>
+	    {% else %}
+
+	    <form class="form-horizontal" id="register" action="{% url 'clock.views.register' %}" method="POST" role="form"	{% if form.is_multipart %}enctype="multipart/form-data"{% endif %}> 
+
+	      <fieldset>
+		<div id="legend_r">
+		  <legend class="">Register</legend>
+		</div>
+		{% csrf_token %} 
+
+		<div class="control-group">
+		  <!-- Username -->
+		  <label class="control-label" for="username">*Username</label>
+		  <div class="controls">
+		    <input type="text" id="username" name="username" placeholder="Username" value="{{ username }}" class="input-xlarge" required autofocus>
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- First Name -->
+		  <label class="control-label" for="first_name">First Name</label>
+		  <div class="controls">
+		    <input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{ first_name }}" class="input-xlarge">
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Last Name -->
+		  <label class="control-label" for="last_name">Last Name</label>
+		  <div class="controls">
+		    <input type="text" id="last_name" name="last_name" placeholder="Last Name" value="{{ last_name }}" class="input-xlarge">
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Email -->
+		  <label class="control-label" for="email">Email</label>
+		  <div class="controls">
+		    <input type="text" id="email" name="email" placeholder="Email Address" value="{{ email }}" class="input-xlarge">
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Password -->
+		  <label class="control-label" for="password">*Password</label>
+		  <div class="controls">
+		    <input type="password" id="password" name="password" placeholder="Password" value="{{ password }}" class="input-xlarge" required>
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Confirmed Password -->
+		  <label class="control-label" for="password">*Confirm Password</label>
+		  <div class="controls">
+		    <input type="password" id="password_confirm" name="password_confirm" placeholder="Confirm Password" value="{{ password_confirm }}" class="input-xlarge" required>
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Profile Picture -->
+		  <label class="control-label" for="profile_pic">Profile Picture</label>
+		  <div class="controls">
+		    <input type="file" id="profile_pic" name="profile_pic" value="{{ profile_pic }}" class="input-xlarge">
+		    <p class="help-block">You may add a profile picture later if you desire.</p>
+		  </div>
+		</div>
+
+		<div class="control-group">
+		  <!-- Button -->
+		  <div class="controls">
+		    <button class="btn btn-primary" style="padding-top:8px;">Create Account</button>
+		  </div>
+		</div>
+	      </fieldset>
+	    </form>
+	    {% if form.non_field_errors %}
+	      <div class="form_errors">
+		{% for err in form.non_field_errors %}
+		<div class="form_error_message">{{ err }}</div>
+		{% endfor %}
+	      </div>
+	    {% endif %}
+	    <p><i>*These fields are required.</i></p>
+	    {% endif %}
+	  </div>
+	</div>
+      </div>
+    </div> <!-- /container -->
+    </body>
+    </html>
+
+    <script class="cssdeck" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script class="cssdeck" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    {% endblock %}

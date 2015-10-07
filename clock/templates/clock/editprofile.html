@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% load widget_tweaks %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+</head>
+
+{% block content %}
+<div class="container" style="background-color:rgba(255,255,255,0.3);">
+    <h2 class="form-signin-heading">Edit Profile</h2>
+    <form class="form-horizontal form-signin" role="form" method="POST" action="{% url 'edit-profile' %}"
+		{% if employee_form.is_multipart %}enctype="multipart/form-data"{% endif %}>{% csrf_token %}
+	{% for err in user_form.non_field_errors %}<p class="text-danger">{{ err }}</p>{% endfor %}
+	{% for err in employee_form.non_field_errors %}<p class="text-danger">{{ err }}</p>{% endfor %}
+	{% for field in user_form %}
+	    <div class="fieldWrapper">
+		<label>{{ field.label }}</label>
+		<p class="text-danger">{{ field.errors|striptags }}</p>
+		{{ field|add_class:"form-control" }}
+	    </div>
+	{% endfor %}
+	<div class="fieldWrapper">
+	    <label>Profile Picture</label>
+	    {{ employee_form.profile_pic }}
+	    <p class="help-block">You may add a profile picture later if you desire.</p>
+	</div>
+	<button class="btn btn-lg btn-success btn-block" type="submit">Submit</button>
+    </form>
+	<br /><br />
+    {% if edited and valid %}
+	<div class="alert alert-success">
+	    <p><span class="glyphicon glyphicon-ok"></span> You have successfully edited your profile!</p>
+	</div>
+    {% endif %}
+    {% if not valid %}
+	<div class="alert alert-danger">
+	    <p><span class="glyphicon glyphicon-remove"></span> There were errors in editing your profile.</p>
+	</div>
+    {% endif %}
+</div>
+
+{% endblock %}
